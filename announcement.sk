@@ -1,0 +1,127 @@
+options:
+    prefix: &aSystem &7»
+    discord: https://discord.gg/Dh9XT3C6JX
+
+# Automatische Ankündigungen alle 5 Minuten
+every 5 minutes:
+    loop all players:
+        send "" to loop-player
+        send "&8&m                                           " to loop-player
+        send "" to loop-player
+        send "  &7Tritt unserem &bDiscord Server &7bei!" to loop-player
+        send "" to loop-player
+        set {_json} to text component from "  &8▸ &7Klicke hier: &b&nDiscord Server"
+        set click event of {_json} to click event to open url "{@discord}"
+        send component {_json} to loop-player
+        send "" to loop-player
+        send "&8&m                                           " to loop-player
+        send "" to loop-player
+        play sound "entity.experience_orb.pickup" with volume 1 and pitch 1.5 to loop-player
+
+# Announce Befehl mit Auswahl
+command /announce [<text>]:
+    permission: announce.use
+    permission message: &cDu hast keine Berechtigung für diesen Befehl!
+    trigger:
+        # Cooldown Check (3 Minuten = 180 Sekunden)
+        if {announce.cooldown.%player%} is set:
+            if difference between now and {announce.cooldown.%player%} is less than 3 minutes:
+                set {_remaining} to difference between 3 minutes and difference between now and {announce.cooldown.%player%}
+                send "{@prefix} &cBitte warte noch &e%{_remaining}% &cbis du wieder eine Ankündigung senden kannst!" to player
+                stop
+        
+        # Keine Argumente = Hilfe
+        if arg-1 is not set:
+            send "" to player
+            send "{@prefix} &7Verfügbare Ankündigungen:" to player
+            send "&8  ▸ &b/announce discord &7- Discord Ankündigung" to player
+            send "&8  ▸ &b/announce <text> &7- Custom Ankündigung" to player
+            send "" to player
+            stop
+        
+        # Discord Ankündigung
+        if arg-1 is "discord":
+            loop all players:
+                send "" to loop-player
+                send "&8&m                                           " to loop-player
+                send "" to loop-player
+                send "  &7Tritt unserem &bDiscord Server &7bei!" to loop-player
+                send "" to loop-player
+                set {_json} to text component from "  &8▸ &7Klicke hier: &b&nDiscord Server"
+                set click event of {_json} to click event to open url "{@discord}"
+                send component {_json} to loop-player
+                send "" to loop-player
+                send "&8&m                                           " to loop-player
+                send "" to loop-player
+                play sound "entity.experience_orb.pickup" with volume 1 and pitch 1.5 to loop-player
+            
+            send "{@prefix} &aDiscord-Ankündigung wurde gesendet!" to player
+            play sound "entity.player.levelup" with volume 1 and pitch 1 to player
+            set {announce.cooldown.%player%} to now
+        
+        # Custom Ankündigung
+        else:
+            set {_message} to arg-1
+            loop all players:
+                send "" to loop-player
+                send "&8&m                                           " to loop-player
+                send "" to loop-player
+                send "  &7Broadcast:" to loop-player
+                send "" to loop-player
+                send "  &f%{_message}%" to loop-player
+                send "" to loop-player
+                send "&8&m                                           " to loop-player
+                send "" to loop-player
+                play sound "entity.experience_orb.pickup" with volume 1 and pitch 1.5 to loop-player
+            
+            send "{@prefix} &aAnkündigung wurde gesendet!" to player
+            play sound "entity.player.levelup" with volume 1 and pitch 1 to player
+            set {announce.cooldown.%player%} to now
+
+# Discord Befehl für einzelne Spieler
+command /discord:
+    aliases: /dc
+    trigger:
+        send "" to player
+        send "&8&m                                           " to player
+        send "" to player
+        send "  &7Tritt unserem &bDiscord Server &7bei!" to player
+        send "" to player
+        set {_json} to text component from "  &8▸ &7Klicke hier: &b&nDiscord Server"
+        set click event of {_json} to click event to open url "{@discord}"
+        send component {_json} to player
+        send "" to player
+        send "&8&m                                           " to player
+        send "" to player
+        play sound "entity.experience_orb.pickup" with volume 1 and pitch 1.5 to player
+
+# Live Ankündigung mit Cooldown
+command /live <text>:
+    permission: announce.live
+    permission message: &cDu hast keine Berechtigung für diesen Befehl!
+    trigger:
+        # Cooldown Check (3 Minuten)
+        if {live.cooldown.%player%} is set:
+            if difference between now and {live.cooldown.%player%} is less than 3 minutes:
+                set {_remaining} to difference between 3 minutes and difference between now and {live.cooldown.%player%}
+                send "{@prefix} &cBitte warte noch &e%{_remaining}% &cbis du wieder live gehen kannst!" to player
+                stop
+        
+        set {_link} to arg-1
+        loop all players:
+            send "" to loop-player
+            send "&8&m                                           " to loop-player
+            send "" to loop-player
+            send "  &b%player% &7ist jetzt &cLIVE&7!" to loop-player
+            send "" to loop-player
+            set {_json} to text component from "  &8▸ &7Klicke hier: &c&nZum Stream"
+            set click event of {_json} to click event to open url {_link}
+            send component {_json} to loop-player
+            send "" to loop-player
+            send "&8&m                                           " to loop-player
+            send "" to loop-player
+            play sound "entity.player.levelup" with volume 1 and pitch 1 to loop-player
+        
+        send "{@prefix} &aLive-Ankündigung wurde gesendet!" to player
+        play sound "entity.player.levelup" with volume 1 and pitch 1 to player
+        set {live.cooldown.%player%} to now
