@@ -1,6 +1,6 @@
 options:
     prefix: &aSystem &7»
-    discord: https://discord.gg/Dh9XT3C6JX
+    discord: https://discord.gg/HereYourDC
 
 # Automatische Ankündigungen alle 5 Minuten
 every 5 minutes:
